@@ -1,5 +1,5 @@
 # RecycleViewDemo
-I read https://github.com/WuXiaolong/PullLoadMoreRecyclerView,and fixed some code from this.
+I read https://github.com/WuXiaolong/PullLoadMoreRecyclerView ,and fixed some code from this.
 You can use this PullRecyclerView in your project.
 
 XML : no need swiperefreshlayout.
