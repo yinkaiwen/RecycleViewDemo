@@ -1,5 +1,7 @@
 package myrecyclerview;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -7,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.example.kevin.recyclerview_swipe_adapter.R;
@@ -21,6 +24,7 @@ public class PullRecyclerView extends LinearLayout {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private boolean mLoading = false;
+    private View mFooter;
 
     public PullRecyclerView(Context context) {
         super(context);
@@ -47,12 +51,27 @@ public class PullRecyclerView extends LinearLayout {
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setOnScrollListener(new PullRecyclerViewScrollListener(this));
 
+        mFooter = view.findViewById(R.id.footer_view);
+        mFooter.setVisibility(View.GONE);
         this.addView(view);
     }
 
     public void loadMore() {
-        if (mLoadMoreListener != null)
+        if (mLoadMoreListener != null && isLoading()) {
+            mFooter.animate()
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setDuration(300)
+                    .translationY(0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            mFooter.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .start();
+            invalidate();
             mLoadMoreListener.loadMore();
+        }
     }
 
     public void setLoading(boolean loading) {
@@ -93,6 +112,12 @@ public class PullRecyclerView extends LinearLayout {
     }
 
     public void loadCompeleted() {
+        mFooter.animate()
+                .setDuration(300)
+                .translationY(mFooter.getHeight())
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .start();
+
         setLoading(false);
     }
 
