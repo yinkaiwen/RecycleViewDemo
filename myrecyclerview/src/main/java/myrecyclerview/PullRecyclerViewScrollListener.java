@@ -4,6 +4,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 
 /**
  * Created by kevin on 2018/2/5.
@@ -11,6 +12,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
  */
 
 public class PullRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
+    private static final String tag = PullRecyclerViewScrollListener.class.getSimpleName();
     private PullRecyclerView mPullRecyclerView;
 
     public PullRecyclerViewScrollListener(PullRecyclerView pullRecyclerView) {
@@ -45,10 +47,11 @@ public class PullRecyclerViewScrollListener extends RecyclerView.OnScrollListene
             first = staggeredGridLayoutManager.findFirstVisibleItemPositions(into)[0];
         }
 
-        if (last == (count - 1)
-                && (dx > 0 || dy > 0)
+        if (mPullRecyclerView.getPullRefreshEnable()
+                && last == (count - 1)
+                && (dy > 0)
                 && !mPullRecyclerView.isLoading()
-                ) {
+                && !mPullRecyclerView.isRefreshing()) {
             mPullRecyclerView.setLoading(true);
             mPullRecyclerView.loadMore();
         }
@@ -65,6 +68,5 @@ public class PullRecyclerViewScrollListener extends RecyclerView.OnScrollListene
             }
         return max;
     }
-
 
 }

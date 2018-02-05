@@ -26,7 +26,11 @@ public class DataUtils {
         mListener = listener;
     }
 
-    public void loadMore(final int i) {
+    public void loadMore(int i) {
+        loadMore(i, false);
+    }
+
+    public void loadMore(final int i, final boolean isRefreshing) {
         if (mHandler == null) {
             mHandler = new Handler(Looper.getMainLooper()) {
                 @Override
@@ -44,7 +48,7 @@ public class DataUtils {
             public void run() {
                 try {
                     Log.i(tag, String.format("ThreadName : %s", Thread.currentThread().getName()));
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -54,6 +58,11 @@ public class DataUtils {
                 }
                 Message obtain = Message.obtain();
                 obtain.obj = data;
+                if (isRefreshing) {
+                    obtain.arg1 = 1;
+                } else {
+                    obtain.arg1 = 0;
+                }
                 mHandler.sendMessage(obtain);
             }
         };

@@ -12,11 +12,11 @@ import java.util.List;
 
 import myrecyclerview.PullRecyclerView;
 
-public class MainActivity extends AppCompatActivity implements DataUtils.DataListener,PullRecyclerView.LoadMoreListener{
+public class MainActivity extends AppCompatActivity implements DataUtils.DataListener, PullRecyclerView.LoadMoreListener {
 
     private PullRecyclerView mPullRecyclerView;
     private List<String> data = new ArrayList<>();
-    private int index = 0;
+    private int index = 1;
     private MyAdapter mAdapter;
     private DataUtils mDataUtils;
 
@@ -40,18 +40,29 @@ public class MainActivity extends AppCompatActivity implements DataUtils.DataLis
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         mPullRecyclerView.setLoadMoreListener(this);
         mPullRecyclerView.setLayoutManager(manager);
+        mPullRecyclerView.setIsCanScrollWithRefreshingOrLoadingMore(true);
         mPullRecyclerView.setAdapter(mAdapter);
+
     }
 
     private void initData() {
         mDataUtils = new DataUtils();
         mDataUtils.setListener(this);
+        mPullRecyclerView.setRefreshing(true);
         mDataUtils.loadMore(index++);
     }
 
     @Override
     public void netCompleted(List<String> data) {
-        this.data.addAll(data);
+        if (index == 1) {
+            for (int i = 0; i < data.size(); i++) {
+                if (!this.data.contains(data.get(i))){
+                    this.data.add(i, data.get(i));
+                }
+            }
+        } else {
+            this.data.addAll(data);
+        }
         mAdapter.notifyDataSetChanged();
         mPullRecyclerView.loadCompeleted();
     }
@@ -63,8 +74,7 @@ public class MainActivity extends AppCompatActivity implements DataUtils.DataLis
 
     @Override
     public void onRefresh() {
-        data.clear();
-        index = 1;
+        index = 0;
         loadMore();
     }
 }

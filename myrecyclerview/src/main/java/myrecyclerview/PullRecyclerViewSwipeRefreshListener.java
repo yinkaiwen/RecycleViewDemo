@@ -17,6 +17,8 @@ public class PullRecyclerViewSwipeRefreshListener implements SwipeRefreshLayout.
 
     @Override
     public void onRefresh() {
-        mPullRecyclerView.onRefresh();
+        if (!mPullRecyclerView.isRefreshing()){
+            mPullRecyclerView.onRefresh();
+        }
     }
 }

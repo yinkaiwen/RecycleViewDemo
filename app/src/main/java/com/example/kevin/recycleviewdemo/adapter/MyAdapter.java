@@ -27,19 +27,16 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public MyAdapter(Context context, List<String> datas) {
         mContext = context;
         this.datas = datas;
-        Log.i(tag, String.format("context : %s,datas : %s", context, datas));
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item, parent, false);
-        Log.i(tag, String.format("View : %s", view.getClass().getSimpleName()));
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.i(tag, "position : " + position);
         if (holder instanceof MyViewHolder) {
             MyViewHolder h = (MyViewHolder) holder;
             h.mTextView.setText(datas.get(position));
@@ -49,7 +46,6 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemCount() {
         int count = datas == null ? 0 : datas.size();
-        Log.i(tag, String.format("count : %s", count));
         return count;
     }
 
