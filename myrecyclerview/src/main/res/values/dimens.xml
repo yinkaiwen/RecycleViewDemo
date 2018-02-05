@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="load_more">20sp</dimen>
+    <dimen name="load_more_padding_margin">10dp</dimen>
+</resources>
