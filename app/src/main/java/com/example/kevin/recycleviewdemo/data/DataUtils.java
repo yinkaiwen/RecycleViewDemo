@@ -42,18 +42,19 @@ public class DataUtils {
                 }
             };
         }
-        final int first = i * 10;
+        final int change = 20;
+        final int first = i * change;
         Runnable task = new Runnable() {
             @Override
             public void run() {
                 try {
                     Log.i(tag, String.format("ThreadName : %s", Thread.currentThread().getName()));
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 List<String> data = new ArrayList<>();
-                for (int j = first; j < first + 10; j++) {
+                for (int j = first; j < first + change; j++) {
                     data.add(String.format("Load %s", j));
                 }
                 Message obtain = Message.obtain();

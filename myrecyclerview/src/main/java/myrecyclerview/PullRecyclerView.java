@@ -3,13 +3,14 @@ package myrecyclerview;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,17 +25,16 @@ import com.example.kevin.recyclerview_swipe_adapter.R;
  */
 
 public class PullRecyclerView extends LinearLayout {
-
+    private static final String tag = PullRecyclerView.class.getSimpleName();
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private boolean mLoading = false;
     private boolean isRefreshing = false;
     private View mFooter;
-    private boolean mPullRefreshEnable = true;
-    private boolean mSwipeRefreshEnable = true;
     //If this field is false,when you refresh or loading,you can not scroll recycler_view.
     //If this field is true,you can scroll this.
     private boolean isCanScrollWithRefreshingOrLoadingMore = false;
+    private PullRecyclerViewScrollListener mPullRecyclerViewScrollListener;
 
     public PullRecyclerView(Context context) {
         super(context);
@@ -60,7 +60,8 @@ public class PullRecyclerView extends LinearLayout {
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setOnScrollListener(new PullRecyclerViewScrollListener(this));
+        mPullRecyclerViewScrollListener = new PullRecyclerViewScrollListener(this);
+        mRecyclerView.setOnScrollListener(mPullRecyclerViewScrollListener);
         mRecyclerView.setOnTouchListener(new RecyclerViewOnTouchListener());
 
         mFooter = view.findViewById(R.id.footer_view);
@@ -69,7 +70,7 @@ public class PullRecyclerView extends LinearLayout {
     }
 
     public void loadMore() {
-        if (mLoadMoreListener != null && isLoading()) {
+        if (mLoadListener != null && isLoading()) {
             setSwipeRefreshEnable(false);
             mFooter.animate()
                     .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -83,7 +84,7 @@ public class PullRecyclerView extends LinearLayout {
                     })
                     .start();
             invalidate();
-            mLoadMoreListener.loadMore();
+            mLoadListener.loadMore();
         }
     }
 
@@ -91,29 +92,25 @@ public class PullRecyclerView extends LinearLayout {
         mLoading = loading;
     }
 
-    private LoadMoreListener mLoadMoreListener;
+    private LoadListener mLoadListener;
 
-    public void setLoadMoreListener(LoadMoreListener loadMoreListener) {
-        mLoadMoreListener = loadMoreListener;
+    public void setLoadListener(LoadListener loadListener) {
+        mLoadListener = loadListener;
     }
 
     public void onRefresh() {
-        if (mLoadMoreListener != null) {
+        if (mLoadListener != null) {
             setRefreshing(true);
-            mLoadMoreListener.onRefresh();
+            mLoadListener.onRefresh();
         }
     }
 
-    public boolean getPullRefreshEnable() {
-        return mPullRefreshEnable;
-    }
 
     public void setSwipeRefreshEnable(boolean swipeRefreshEnable) {
-        mSwipeRefreshEnable = swipeRefreshEnable;
         mSwipeRefreshLayout.setEnabled(swipeRefreshEnable);
     }
 
-    public interface LoadMoreListener {
+    public interface LoadListener {
         void loadMore();
 
         void onRefresh();
@@ -167,8 +164,22 @@ public class PullRecyclerView extends LinearLayout {
     }
 
     class RecyclerViewOnTouchListener implements View.OnTouchListener {
+//        int lastX;
+//        int lastY;
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+//            int currentX = (int) event.getRawX();
+//            int currentY = (int) event.getRawY();
+//            int dx = currentX - lastX;
+//            int dy = currentY - lastY;
+//
+//            lastX = currentX;
+//            lastY = currentY;
+
+//            Log.i(tag, String.format("dx : %s,dy : %s", dx, dy));
+
+
             return (!isCanScrollWithRefreshingOrLoadingMore) && (mLoading || isRefreshing);
         }
     }

@@ -5,6 +5,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:background="#cfff"
         android:paddingBottom="@dimen/load_more_padding_margin"
         android:padding="@dimen/load_more_padding_margin"
         android:gravity="center"

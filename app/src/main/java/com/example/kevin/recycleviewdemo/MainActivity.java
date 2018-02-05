@@ -2,6 +2,7 @@ package com.example.kevin.recycleviewdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.example.kevin.recycleviewdemo.adapter.MyAdapter;
@@ -12,7 +13,7 @@ import java.util.List;
 
 import myrecyclerview.PullRecyclerView;
 
-public class MainActivity extends AppCompatActivity implements DataUtils.DataListener, PullRecyclerView.LoadMoreListener {
+public class MainActivity extends AppCompatActivity implements DataUtils.DataListener, PullRecyclerView.LoadListener {
 
     private PullRecyclerView mPullRecyclerView;
     private List<String> data = new ArrayList<>();
@@ -36,9 +37,11 @@ public class MainActivity extends AppCompatActivity implements DataUtils.DataLis
 
     private void initRecyclerView() {
         mAdapter = new MyAdapter(this, data);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
+//        LinearLayoutManager manager = new LinearLayoutManager(this);
+        GridLayoutManager manager = new GridLayoutManager(this,2);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
-        mPullRecyclerView.setLoadMoreListener(this);
+
+        mPullRecyclerView.setLoadListener(this);
         mPullRecyclerView.setLayoutManager(manager);
         mPullRecyclerView.setIsCanScrollWithRefreshingOrLoadingMore(true);
         mPullRecyclerView.setAdapter(mAdapter);
